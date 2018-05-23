@@ -156,7 +156,7 @@ public final class XMLTransformer {
 
 			mSerializer = TransformerFactory.newInstance().newTransformer();
 			mSerializer.setOutputProperty(OutputKeys.ENCODING, XML_CHARSET_NAME);
-			mSerializer.setOutputProperty(OutputKeys.INDENT, "yes"); // TODO: Disable as soon as bug 0004850 is fixed.
+			mSerializer.setOutputProperty(OutputKeys.INDENT, "no");
 			mSerializer.setOutputProperty(OutputKeys.STANDALONE, "no");
 			
 			mDateFormat = new SimpleDateFormat("yyyy-MM-dd");
