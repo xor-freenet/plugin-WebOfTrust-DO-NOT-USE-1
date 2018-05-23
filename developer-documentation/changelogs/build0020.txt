@@ -29,6 +29,22 @@ CHANGELOG - prefixed with the bugtracker issue number:
   Thanks to nextgens for insipiring this by setting up Travis CI at
   fred!
 
+- 0004850: [Bugs] Weird XML parsing failure (xor)
+
+  These parsing failures used to be triggered by a bug in the Java XML
+  parser.
+  WoT contained two workarounds for these failures:
+  - The InputStream which fed the XML into the parser was filtered to
+    only return 1 byte at a time.
+  - The XML which WoT uploads to the network was being indented.
+
+  The workarounds for this bugs are hereby removed since the proof of
+  concept code snippet does not reproduce the bug anymore on Java 7, 8
+  and 9.
+  The parser failures were probably fixed in a recent Java version.
+  To ensure it does not happen again the proof of concept was added as a
+  unit test.
+
 - 0007016: [Bugs] Fix unit test failure on Java 9 (xor)
 
   Fixes a bug in the unit tests, not in the actual code.
