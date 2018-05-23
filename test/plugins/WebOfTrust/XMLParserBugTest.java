@@ -171,7 +171,9 @@ public class XMLParserBugTest {
 		"</WebOfTrustRC2>";
 
 	@Test
-	public void parseIdentityXMLAndTestResult() throws IOException, SAXException, ParserConfigurationException {
+	public void testIdentityXMLParsing() throws IOException, SAXException,
+			ParserConfigurationException {
+		
 		final String input = rawXML;
 		final Document xmlDoc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(input.getBytes("UTF-8")));
 		final Element identityElement = (Element)xmlDoc.getElementsByTagName("Identity").item(0);
