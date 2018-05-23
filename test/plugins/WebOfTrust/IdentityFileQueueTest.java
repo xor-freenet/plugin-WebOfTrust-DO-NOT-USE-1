@@ -34,6 +34,10 @@ import freenet.support.PrioritizedTicker;
  * They are being tested against each other by feeding the same set of identity files to them, and
  * then checking whether the resulting WOT database is equal.<br><br>
  * 
+ * This implicitly also tests {@link XMLTransformer#exportOwnIdentity(OwnIdentity,
+ * java.io.OutputStream)} and {@link XMLTransformer#importIdentity(freenet.keys.FreenetURI,
+ * InputStream)}.
+ * 
  * TODO: Ideas for tests:<br>
  * - Test whether deduplication does actually deduplicate stuff.
  */
