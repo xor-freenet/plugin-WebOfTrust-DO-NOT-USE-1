@@ -3,7 +3,6 @@
  * any later version). See http://www.gnu.org/ for details of the GPL. */
 package plugins.WebOfTrust;
 
-import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -177,8 +176,6 @@ public final class XMLTransformer {
     Document parseDocument(InputStream xmlInputStream, final int softXMLByteSizeLimit)
             throws IOException, SAXException {
         
-        xmlInputStream = new OneBytePerReadInputStream(xmlInputStream); // Workaround for Java bug, see the stream class for explanation
-         
         // May not be accurate by definition of available(). So the JavaDoc requires the callers to obey the size limit, this is a double-check.
         if(xmlInputStream.available() > softXMLByteSizeLimit)
             throw new IllegalArgumentException("XML contains too many bytes: " + xmlInputStream.available());
@@ -279,26 +276,6 @@ public final class XMLTransformer {
 		synchronized(mSerializer) { // TODO: Figure out whether the Serializer is maybe synchronized anyway
 			mSerializer.transform(domSource, resultStream);
 		}
-	}
-	
-	/**
-	 * Workaround class for:
-	 * https://bugs.freenetproject.org/view.php?id=4850
-	 * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=7031732
-	 * 
-	 * @author 	NowWhat@0plokJYoIwsHORk6RlUVPRA-HJ3-Cg7SjJP4S2fWEnw.freetalk
-	 */
-	public class OneBytePerReadInputStream extends FilterInputStream {
-
-		public OneBytePerReadInputStream(InputStream in) {
-			super(in);
-		}
-
-		@Override
-		public int read(byte[] b, int off, int len) throws IOException {
-			return super.read(b, off, len<=1 ? len : 1);
-		}
-
 	}
 	
 	private static final class ParsedIdentityXML {
