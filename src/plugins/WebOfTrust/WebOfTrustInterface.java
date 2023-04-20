@@ -38,14 +38,19 @@ public abstract class WebOfTrustInterface {
 	/**
 	 * The official seed identities of the WoT plugin: If a newbie wants to download the whole offficial web of trust, he needs at least one
 	 * trust list from an identity which is well-connected to the web of trust. To prevent newbies from having to add this identity manually,
-	 * the Freenet development team provides a list of seed identities - each of them is one of the developers.
+	 * the Freenet development team provides a list of seed identities from longterm users and developers.
 	 */
 	static final String[] SEED_IDENTITIES = new String[] { 
-		"USK@QeTBVWTwBldfI-lrF~xf0nqFVDdQoSUghT~PvhyJ1NE,OjEywGD063La2H-IihD7iYtZm3rC0BP6UTvvwyF5Zh4,AQACAAE/WebOfTrust/1531", // xor
-		"USK@z9dv7wqsxIBCiFLW7VijMGXD9Gl-EXAqBAwzQ4aq26s,4Uvc~Fjw3i9toGeQuBkDARUV5mF7OTKoAhqOA9LpNdo,AQACAAE/WebOfTrust/5156", // Toad
-		"USK@o2~q8EMoBkCNEgzLUL97hLPdddco9ix1oAnEa~VzZtg,X~vTpL2LSyKvwQoYBx~eleI2RF6QzYJpzuenfcKDKBM,AQACAAE/WebOfTrust/19619", // Bombe
-		"USK@D3MrAR-AVMqKJRjXnpKW2guW9z1mw5GZ9BB15mYVkVc,xgddjFHx2S~5U6PeFkwqO5V~1gZngFLoM-xaoMKSBI8,AQACAAE/WebOfTrust/8231", // zidel
-		"USK@nmTkFmn0Akz1-G9iIN2w6lsQEAfWkpQw3ckOxtwMh2Q,Du9GQxGDj0Nax4zN9-ANTPetx-GxOoWaRf6Gq6Nbh1o,AQACAAE/WebOfTrust/11558", // operhiem1
+		"USK@QeTBVWTwBldfI-lrF~xf0nqFVDdQoSUghT~PvhyJ1NE,OjEywGD063La2H-IihD7iYtZm3rC0BP6UTvvwyF5Zh4,AQACAAE/WebOfTrust/1613", // xor
+		// "USK@z9dv7wqsxIBCiFLW7VijMGXD9Gl-EXAqBAwzQ4aq26s,4Uvc~Fjw3i9toGeQuBkDARUV5mF7OTKoAhqOA9LpNdo,AQACAAE/WebOfTrust/5156", // Toad no longer active
+		"USK@o2~q8EMoBkCNEgzLUL97hLPdddco9ix1oAnEa~VzZtg,X~vTpL2LSyKvwQoYBx~eleI2RF6QzYJpzuenfcKDKBM,AQACAAE/WebOfTrust/224077", // Bombe changed ID, this is now only called Seed
+		"USK@e3myoFyp5avg6WYN16ImHri6J7Nj8980Fm~aQe4EX1U,QvbWT0ImE0TwLODTl7EoJx2NBnwDxTbLTE6zkB-eGPs,AQACAAE/WebOfTrust/7132", // Bombe new
+		// "USK@D3MrAR-AVMqKJRjXnpKW2guW9z1mw5GZ9BB15mYVkVc,xgddjFHx2S~5U6PeFkwqO5V~1gZngFLoM-xaoMKSBI8,AQACAAE/WebOfTrust/8231", // zidel no longer active
+		"USK@nmTkFmn0Akz1-G9iIN2w6lsQEAfWkpQw3ckOxtwMh2Q,Du9GQxGDj0Nax4zN9-ANTPetx-GxOoWaRf6Gq6Nbh1o,AQACAAE/WebOfTrust/12402", // operhiem1
+		"USK@8kCqlpKwsXackbaIm7PI71gTfgRzZZScud4qfg8qcEU,6xAFCWENTik96iQyCuqRsYkWKbyhbpfdDUM22c71tqI,AQACAAE/WebOfTrust/1888", // TheSeeker
+		"USK@-wFZ6ezwU3QgvM1u8~uiLbtjxSQ19tuqn4Q94lvTrwE,7Cyi6MgbnwnQmXQcLdl8y~snFUtrEle3bghkqwNLoMw,AQACAAE/WebOfTrust/7055", // Hieronymus
+		"USK@8AEGotJKXJ4ABJy1gKjls4SrrzpshQNoEMAbu0IFA94,blTuIOwf7k9p1R2GCfJSPSaOFzsuXLrFujOnV1Irjag,AQACAAE/WebOfTrust/11821", // Adilson
+		"USK@6~ZDYdvAgMoUfG6M5Kwi7SQqyS-gTcyFeaNN1Pf3FvY,OSOT4OEeg4xyYnwcGECZUX6~lnmYrZsz05Km7G7bvOQ,AQACAAE/WebOfTrust/16874", // ArneBab
 	};
 	
 	abstract public List<Identity> getAllIdentities();
