@@ -1,5 +1,3 @@
-FIXME: I've been obeying a consistent style when writing WoT/FT code for many years.  
-Write it down here.
 # Web of Trust / Freetalk code style guideline
 
 WoT **thoroughly** follows this style guideline, please keep obeying it:
