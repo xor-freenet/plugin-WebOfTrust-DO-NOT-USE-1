@@ -3,3 +3,4 @@ build-test
 dependencies
 dist
 override.properties
+/.gradle/
