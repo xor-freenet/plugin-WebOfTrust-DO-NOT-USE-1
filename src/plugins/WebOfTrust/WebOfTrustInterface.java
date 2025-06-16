@@ -43,8 +43,7 @@ public abstract class WebOfTrustInterface {
 	static final String[] SEED_IDENTITIES = new String[] { 
 		"USK@QeTBVWTwBldfI-lrF~xf0nqFVDdQoSUghT~PvhyJ1NE,OjEywGD063La2H-IihD7iYtZm3rC0BP6UTvvwyF5Zh4,AQACAAE/WebOfTrust/1613", // xor
 		// "USK@z9dv7wqsxIBCiFLW7VijMGXD9Gl-EXAqBAwzQ4aq26s,4Uvc~Fjw3i9toGeQuBkDARUV5mF7OTKoAhqOA9LpNdo,AQACAAE/WebOfTrust/5156", // Toad - no longer active
-		"USK@o2~q8EMoBkCNEgzLUL97hLPdddco9ix1oAnEa~VzZtg,X~vTpL2LSyKvwQoYBx~eleI2RF6QzYJpzuenfcKDKBM,AQACAAE/WebOfTrust/24077", // Bombe changed ID, this is now only called Seed
-		"USK@e3myoFyp5avg6WYN16ImHri6J7Nj8980Fm~aQe4EX1U,QvbWT0ImE0TwLODTl7EoJx2NBnwDxTbLTE6zkB-eGPs,AQACAAE/WebOfTrust/7132", // Bombe new
+		"USK@o2~q8EMoBkCNEgzLUL97hLPdddco9ix1oAnEa~VzZtg,X~vTpL2LSyKvwQoYBx~eleI2RF6QzYJpzuenfcKDKBM,AQACAAE/WebOfTrust/24077", // Bombe
 		// "USK@D3MrAR-AVMqKJRjXnpKW2guW9z1mw5GZ9BB15mYVkVc,xgddjFHx2S~5U6PeFkwqO5V~1gZngFLoM-xaoMKSBI8,AQACAAE/WebOfTrust/8231", // zidel - no longer active
 		"USK@nmTkFmn0Akz1-G9iIN2w6lsQEAfWkpQw3ckOxtwMh2Q,Du9GQxGDj0Nax4zN9-ANTPetx-GxOoWaRf6Gq6Nbh1o,AQACAAE/WebOfTrust/12402", // operhiem1
 		"USK@8kCqlpKwsXackbaIm7PI71gTfgRzZZScud4qfg8qcEU,6xAFCWENTik96iQyCuqRsYkWKbyhbpfdDUM22c71tqI,AQACAAE/WebOfTrust/1888", // TheSeeker
