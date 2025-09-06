@@ -2235,6 +2235,11 @@ public final class WebOfTrust extends WebOfTrustInterface
 						// EditionHints to be created (once the FIXME for that there is resolved),
 						// and before there is no OwnIdentity we don't need to download the seeds
 						// anyway.
+						// EDIT: The above paragraph w.r.t. createOwnidentity() does not take into
+						// account that we also update the edition number for existing users who
+						// do have an OwnIdentity already!
+						// So we should indeed notify mFetcher. Don't forget that we need to add
+						// a synchronized(mFetcher) to do so, and obey the correct locking order!
 						
 						existingSeed.forceSetEdition(edition);
 						existingSeed.forceSetCurrentEditionFetchState(FetchState.NotFetched);
