@@ -3,7 +3,9 @@ Web of Trust Version 0.4.5 build0021
 
 SUMMARY AND OUTLOOK (detailed changelog is below):
 
-Summary blah blah. Blah blah reference to link [1].
+This is a maintenance release which adds new seed identities and removes
+inactive ones.
+This should speed up bootstrapping for new users.
 
 Outlook blah blah.
 
