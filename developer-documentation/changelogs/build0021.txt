@@ -25,13 +25,39 @@ The next thing which I will consider for a release is updating the
 translations from Transifex.
 
 
-CHANGELOG - prefixed with the bugtracker issue number:
+CHANGELOG:
 
-- 0000001: title_of_issue_1.............................................
-           more_lines_of_title..........................................
+- [Usability] Seed identities: Add new ones, remove inactive ones
+
+  This should speed up bootstrapping for new users.
+
+  Added:
+  - Adilson_Lanpo (suggested by ArneBab)
+  - ArneBab
+  - HieronymusCH (suggested by ArneBab)
+
+  If you're one of the above, please do not turn off trust list
+  publishing in WoT's settings, otherwise your seed identity
+  wouldn't be of any use.
+
+  And your identity will now publish 100 captchas per day instead of 10.
+  Don't worry - this likely will not mean much more traffic:
+  WoT does not prefer seed identities when displaying captchas,
+  the seed identities are just downloaded first and then other identities
+  will be downloaded from their trust lists.
+  So if new users keep running WoT for some time before they solve
+  captchas then they will get captchas from other identities as well, not
+  just the seeds.
+
+  But if you wish to be removed as a seed feel free to let me know!
   
-  Blah.
-  Blah.
+  Removed because they haven't been active in a long time:
+  - operhiem1
+  - toad_
+  - zidel
+
+  Thanks to ArneBab for providing the initial patch!
+
 
 Thanks to:
   - ArneBab for motivating me to do this release!
