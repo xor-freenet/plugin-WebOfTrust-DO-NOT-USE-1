@@ -7,7 +7,22 @@ This is a maintenance release which adds new seed identities and removes
 inactive ones.
 This should speed up bootstrapping for new users.
 
-Outlook blah blah.
+
+There hasn't been a release in a long time because I was and am still
+busy with developing the big IdentityFetcher-rewrite release,
+it's currently 85 branches long.
+
+ArneBab has rightfully told me that not doing releases until the rewrite
+is finished would be taking too long and I should do releases meanwhile.
+
+Hence from now on I'll try to do small, self-contained feature releases
+more frequently.
+I'll not promise a fixed release schedule because I have been bad at
+date estimates in the past so I should rather do none.
+
+
+The next thing which I will consider for a release is updating the
+translations from Transifex.
 
 
 CHANGELOG - prefixed with the bugtracker issue number:
