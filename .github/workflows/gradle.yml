@@ -31,7 +31,9 @@ jobs:
         java-version: [8, 11, 12, 13, 14, 15, 16, 17, 18]
         fred-branch:  [next]
         # Use Gradle instead of Ant as it supports using multiple CPU cores on the unit tests.
-        WoT-builder: [gradle]
+        # EDIT: FIXME: Temporarily changed to Ant for branch build0021-development because it does
+        # not have Gradle yet - should be reverted to Gradle once branch next is merged.
+        WoT-builder: [Ant]
         upload-jar-to-freenet: [false]
         
         # Notice: The below special cases will also define variables with the same values as the
@@ -55,7 +57,9 @@ jobs:
             java-version: 8
             # Kept at default:
             os: ubuntu-latest
-            WoT-builder: gradle
+            # EDIT: FIXME: Temporarily changed to Ant for branch build0021-development because it
+            # does not have Gradle yet - should be reverted to Gradle once branch next is merged.
+            WoT-builder: Ant
           
           - java-version: 19-ea
             # Still use Ant on one Java version to ensure it keeps working.
