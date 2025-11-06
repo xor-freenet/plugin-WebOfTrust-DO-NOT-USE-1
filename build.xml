@@ -27,8 +27,8 @@
 	<property name="cobertura.location" value="/usr/share/java/cobertura.jar"/>
 	<!-- Minimum Java version which fred officially requires
 	   = Maximum version which WoT's code can use features of. -->
-	<property name="source-version" value="7"/>
-	<property name="target-version" value="7"/>
+	<property name="source-version" value="8"/>
+	<property name="target-version" value="8"/>
 	<!-- To allow you to restart your debug node after recompiling without manually reloading
 	     the WoT plugin you can specifiy this property to point to the node's WebOfTrust.jar.
 	     The Ant builder will delete it automatically as part of the "clean" target. -->
