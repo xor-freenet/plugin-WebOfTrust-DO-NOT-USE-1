@@ -59,7 +59,7 @@ jobs:
             # does not have Gradle yet - should be reverted to Gradle once branch next is merged.
             WoT-builder: ant
           
-          - java-version: 25
+          - java-version: 21
             # Still use Ant on one Java version to ensure it keeps working.
             # Don't use it on the above job because deployment happens there which is slow, just
             # like Ant.
