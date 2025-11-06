@@ -15,7 +15,11 @@ jobs:
       matrix:
         # TODO: Also test on Debian stable as that's what fred targets.
         # Unfortunately as of 2022-02-27 Debian is not available on GitHub Actions (yet?).
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        # FIXME: Temporarily removed windows-latest and macos-latest because Ant does not work
+        # there. We're temporarily using Ant instead of Gradle for branch build0021-development
+        # because the branch does not have Gradle yet, see the below FIXMEs. Add windows-latest and
+        # macos-latest back once Gradle is used.
+        os: [ubuntu-latest]
         # Test against just the LTS versions of Java.
         # 8 is $FRED_MINIMUM_JAVA_VERSION currently.
         # TODO: Code quality: As of 2022-01-03 using ["${{env.FRED_MINIMUM_JAVA_VERSION}}", ...]
