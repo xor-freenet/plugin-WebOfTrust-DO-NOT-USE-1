@@ -201,6 +201,7 @@ jobs:
             # FIXME: The 10 minute timeout was a Travis CI thing. Does GHA have one?
             WOT__SHOW_GRADLE_TEST_OUTPUT=1 ./gradlew clean test jar
         else false ; fi
+        echo 'Checksum of WoT JAR:' ; sha256sum dist/WebOfTrust.jar
         # To test the Ant and Gradle builders against each other uncomment the following.
         # FIXME: Do this because this script has been converted from Travis CI to GitHub Actions.
         # FIXME: Make sure the scripts use the Gradle wrapper so the Gradle version matches.
