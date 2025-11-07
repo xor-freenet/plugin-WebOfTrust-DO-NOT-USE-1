@@ -59,6 +59,12 @@ CHANGELOG:
   Thanks to ArneBab for providing the initial patch!
 
 
+CHANGELOG about stuff only interesting for developers:
+
+- [Maintenance] Fix Ant build script to work with new Java and Ant
+  versions
+
+
 Thanks to:
   - ArneBab for motivating me to do this release!
 
