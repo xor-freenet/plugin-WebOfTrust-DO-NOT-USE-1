@@ -1,0 +1,242 @@
+# FIXME: 2025-11-08 This is a TEMPORARY GitHub Actions script, it should be reverted before merging
+# branch next! See the explanation added to the changelog of build0021 by the previous git commit
+# f87c0bfe790fc711a22fc7a347539d5203da4063.
+
+# FIXME: Replace the Travis CI badges in the README.md with GitHub Actions badges.
+
+name: CI
+# FIXME: Add cronjob
+on: [push, pull_request]
+
+env:
+  # NOTICE: Also adapt the "matrix" section below when changing this.
+  FRED_MINIMUM_JAVA_VERSION: 8
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false # Don't cancel execution for all Java versions if one fails.
+      matrix:
+        # TODO: Also test on Debian stable as that's what fred targets.
+        # Unfortunately as of 2022-02-27 Debian is not available on GitHub Actions (yet?).
+        # FIXME: Temporarily removed windows-latest and macos-latest because Ant does not work
+        # there. We're temporarily using Ant instead of Gradle for branch build0021-development
+        # because the branch does not have Gradle yet, see the below FIXMEs. Add windows-latest and
+        # macos-latest back once Gradle is used.
+        os: [ubuntu-latest]
+        # Test against just the LTS versions of Java.
+        # 8 is $FRED_MINIMUM_JAVA_VERSION currently.
+        # TODO: Code quality: As of 2022-01-03 using ["${{env.FRED_MINIMUM_JAVA_VERSION}}", ...]
+        # instead of [8, ...] does not work, see: https://github.com/actions/runner/issues/480
+        # Retry once the above bugtracker entry is fixed.
+        # Also apply this to the "include:" section.
+        java-version: [8, 11, 17, 21]
+        fred-branch:  [next]
+        # Use Gradle instead of Ant as it supports using multiple CPU cores on the unit tests.
+        # EDIT: FIXME: Temporarily changed to Ant for branch build0021-development because it does
+        # not have Gradle yet - should be reverted to Gradle once branch next is merged.
+        WoT-builder: [ant]
+        upload-jar-to-freenet: [false]
+        
+        # Notice: The below special cases will also define variables with the same values as the
+        # above defaults. This is necessary because otherwise GHA would set them to be empty.
+        include:
+          # We will run most of our tests against fred branch next (= the development branch) to
+          # fulfill our purpose of integration testing.
+          # But we will hereby also test on branch master to ensure WoT works against the
+          # latest stable release as well because plugins can be updated without a new Freenet
+          # release.
+          # We will upload from this fred and Java version because they are the minimum to guarantee
+          # the resulting fred upload and JAR will work everywhere.
+          # We only test against master on a single Java version to keep the matrix small.
+          #
+          # Notice: If GHA did have a limit on the number of jobs being run concurrently we should
+          # reorder the matrix to ensure this one runs first as it is the slowest. However as of
+          # 2021-12-27 there is no limit:
+          # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstrategymax-parallel
+          - fred-branch: master
+            upload-jar-to-freenet: true
+            java-version: 8
+            # Kept at default:
+            os: ubuntu-latest
+            # EDIT: FIXME: Temporarily changed to Ant for branch build0021-development because it
+            # does not have Gradle yet - should be reverted to Gradle once branch next is merged.
+            WoT-builder: ant
+          
+          - java-version: 21
+            # Still use Ant on one Java version to ensure it keeps working.
+            # Don't use it on the above job because deployment happens there which is slow, just
+            # like Ant.
+            WoT-builder: ant
+            # Kept at default:
+            os: ubuntu-latest
+            fred-branch: next
+            upload-jar-to-freenet: false
+    runs-on: ${{ matrix.os }}
+    name: >-
+        ${{matrix.os}}
+        JDK${{matrix.java-version}}
+        fred: ${{matrix.fred-branch}}
+        builder: ${{matrix.WoT-builder}}
+        deploy: ${{matrix.upload-jar-to-freenet}}
+    
+    steps:
+    - name: Install dependencies
+      shell: bash
+      run: |
+        if [ '${{runner.os}}' = 'macOS' ] ; then
+          brew install coreutils # For step "Compile and test WoT"
+          # The remaining dependencies will be downloaded using Gradle.
+        elif [ '${{runner.os}}' = 'Linux' ] ; then
+          # python3-pip is for .travis.upload-jar-to-freenet.sh
+          sudo apt-get --assume-yes install ant ant-optional junit4 libhamcrest-java python3-pip
+        fi
+        # On Windows the dependencies will be downloaded using Gradle.
+    
+    - name: Install Java
+      uses: actions/setup-java@v2
+      with:
+        # Using 'zulu' distribution because as of 2022-05-24 the other distributions either don't
+        # provide many old Java versions or lack an early access build of the upcoming version.
+        # For some overview of distributions see https://news.ycombinator.com/item?id=28820601
+        # TODO: Code quality: Also test against Oracle's JDK once it is available on GHA,
+        # upstream bugtracker issue: https://github.com/actions/setup-java/issues/69
+        distribution: 'zulu'
+        java-version: ${{matrix.java-version}}
+    
+    - name: Checkout Freenet git repository
+      uses: actions/checkout@v2
+      with:
+        repository: freenet/fred
+        ref: ${{matrix.fred-branch}}
+        path: fred # Available via: "$GITHUB_WORKSPACE/fred"
+    
+    - name: Checkout WoT git repository
+      uses: actions/checkout@v2
+      with:
+        path: plugin-WebOfTrust # Available via: "$GITHUB_WORKSPACE/plugin-WebOfTrust"
+        # FIXME: The Gradle script should init submodules automatically like the Ant one did.
+        # Remove the command for that from the README.md once you implement it.
+        submodules: true
+    
+    - name: Compile Freenet Git repository
+      shell: bash
+      run: |
+        # FIXME: $FRED_UPDATED is not populated by GitHub Actions yet
+        FRED_UPDATED=1 &&
+        if [ "$FRED_UPDATED" = 1 ] ; then
+          pushd "$GITHUB_WORKSPACE"/fred &&
+          # TODO: freenet.jar won't contain class Version if we don't run the
+          # clean task in a separate execution of Gradle. I.e. this wouldn't work:
+          #   $ gradle clean jar
+          # This is due to a bug in fred's Gradle script which could be fixed
+          # like this WoT commit did: 06c007204f40c712a398f0b58671f77fd9aeffd1
+          # EDIT: A better long-term fix for such issues would be to use a file "Version.properties"
+          # instead of patching the "Version.java" source code, like Freetalk now does.
+          # See Freetalk commits 195cfd70aad92c592e0a591d9804712b1cb43a1e and
+          # 0d956c4bf0afbca7a8cb9ef855d0ea415f09bb9a
+          ./gradlew clean &&
+          # "copyRuntimeLibs" copies the JAR *and* dependencies - which WoT also
+          # needs - to build/output/
+          ./gradlew jar copyRuntimeLibs -x test &&
+          popd
+        else
+          echo "No changes at fred, not recompiling."
+        fi
+    
+    - name: Start a Freenet node to prepare for JAR upload
+      
+      # FIXME: Make it work and enable it.
+      ##if: ${{matrix.upload-jar-to-freenet}}
+      if: false
+      
+      shell: bash
+      run: |
+        echo "Starting a Freenet node already to connect to network far before deploy stage..." &&
+        cd "$GITHUB_WORKSPACE"/fred &&
+        "$GITHUB_WORKSPACE/plugin-WebOfTrust/.travis.start-freenet.sh" # FIXME: Rename the script
+    
+    - name: Compile and test WoT
+      shell: bash
+      run: |
+        set -o errexit
+        cd "$GITHUB_WORKSPACE/plugin-WebOfTrust"
+        
+        # TODO: Put fred checksums and fred version info into separate "- name" steps so they
+        # can be viewed more easily on the web interface.
+        # TODO: Also print the checksums of other dependency JARs which Gradle has obtained from the
+        # Internet or the local system.
+        echo 'Checksums of fred JARs:' ; sha256sum ../fred/build/output/*
+        echo 'fred version:'
+        unzip -qc '../fred/build/output/freenet.jar' 'META-INF/MANIFEST.MF' \
+            | fgrep 'Implementation-Version:'
+        if [ "${{matrix.WoT-builder}}" = "ant" ] ; then
+            ant clean && ant
+        elif [ "${{matrix.WoT-builder}}" = "gradle" ] ; then
+            # FIXME: Move Gradle download to separate step
+            rm -rf ./gradlew ./gradlew.bat ./gradle/
+            # Workaround for "$ gradle wrapper ..."  failing to download the wrapper if the build
+            # file is incompatible with the system's Gradle version and thus fails to parse.
+            # TODO: Code quality: Remove, along with the mv which undos it, once the Gradle issue is
+            # fixed: https://github.com/gradle/gradle/issues/19809
+            mv -f build.gradle build.gradle.github-actions-temp
+            echo "apply plugin: 'java'" > build.gradle
+            # Latest Gradle version known to definitely work with WoT.
+            # FIXME: Upgrade it and fix the Gradle script to work with the most recent one.
+            # FIXME: Once the latest Gradle works apply these Freetalk commits:
+            #   fba2d9723bef29f4d9f984d74a41b6c88b7a3887
+            #   ef952a58d29aeea0928ab4597819a42811dc3943
+            #   81ae3f972f60abd95b2c8d29e22184b42518676d
+            #   77fc5a73bde615792dfd2886f9257382b4557640
+            #   b0ba09c129e1469d6268434203783bb7c6024c8b
+            #   5aa85ed4532c20284fbb0bf4f532b3299f29716e
+            #   75093ebf5fbdb252a34a118d7857e442f96562a8
+            #   1caddf40a743477499df6013b3ec61ab89453d39
+            #   75c49a7fa3229bd142723b62f493b918e7486330
+            gradle wrapper --gradle-version 4.10.3
+            mv -f build.gradle.github-actions-temp build.gradle
+            if [ "${{runner.os}}" != 'Linux' ] ; then
+              # We can't obtain the dependencies from /usr/share so download them instead.
+              export WOT__DOWNLOAD_DEPENDENCIES=1
+            fi
+            ./gradlew --version
+            # Show stdout/stderr so random seeds of failed tests can be obtained by developers to
+            # reproduce failed test runs. Also prevents the 10 minute build timeout.
+            # FIXME: The 10 minute timeout was a Travis CI thing. Does GHA have one?
+            WOT__SHOW_GRADLE_TEST_OUTPUT=1 ./gradlew clean test jar
+        else false ; fi
+        echo 'Checksum of WoT JAR:' ; sha256sum dist/WebOfTrust.jar
+        # To test the Ant and Gradle builders against each other uncomment the following.
+        # FIXME: Do this because this script has been converted from Travis CI to GitHub Actions.
+        # FIXME: Make sure the scripts use the Gradle wrapper so the Gradle version matches.
+        ## - tools/compare-gradle-jars-with-ant-jars
+        ## - tools/compare-gradle-tests-with-ant-tests
+    
+    - name: Upload WoT JAR to Freenet
+      # TODO: Code quality: This does not use GitHub Actions' deployment API but rather is hereby
+      # declared as a plain step which runs a script. Consider if using the deployment API instead
+      # yields any benefit. See:
+      # https://docs.github.com/en/actions/deployment/deploying-with-github-actions
+      
+      # FIXME: Make it work and enable it.
+      ## if: ${{matrix.upload-jar-to-freenet}}
+      if: false
+      
+      shell: bash
+      run: ./.travis.upload-jar-to-freenet.sh
+
+# FIXME: Convert the below caching code from its Travis CI syntax to the GitHub Actions syntax.
+# See https://docs.github.com/en/actions/guides/building-and-testing-java-with-gradle#caching-dependencies
+#
+## before_cache:
+##   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+##   - rm -f  $HOME/.gradle/caches/jars-2/jars-2.lock
+##   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+## 
+## cache:
+##   apt: true
+##   directories:
+##   - $TRAVIS_BUILD_DIR/../fred/
+##   - $HOME/.m2
+##   - $HOME/.gradle/caches/
+##   - $HOME/.gradle/wrapper/

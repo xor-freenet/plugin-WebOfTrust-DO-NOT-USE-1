@@ -27,8 +27,8 @@
 	<property name="cobertura.location" value="/usr/share/java/cobertura.jar"/>
 	<!-- Minimum Java version which fred officially requires
 	   = Maximum version which WoT's code can use features of. -->
-	<property name="source-version" value="7"/>
-	<property name="target-version" value="7"/>
+	<property name="source-version" value="8"/>
+	<property name="target-version" value="8"/>
 	<!-- To allow you to restart your debug node after recompiling without manually reloading
 	     the WoT plugin you can specifiy this property to point to the node's WebOfTrust.jar.
 	     The Ant builder will delete it automatically as part of the "clean" target. -->
@@ -94,7 +94,12 @@
 		<fileset file="${hamcrest.location}"/>
 		<fileset file="${cobertura.location}"/>
 	</path>
-
+	
+	<!-- For junit - we need to specify some command line arguments on Java >= 9 -->
+	<condition property="java.atleast9">
+		<javaversion atleast="9"/>
+	</condition>
+	
 	<presetdef name="javac">
 		<!--
 		Workaround for ant 1.8 misfeature. TODO: Remove when ant fixes this.
@@ -328,6 +333,7 @@
 			<sysproperty key="net.sourceforge.cobertura.datafile"
 				file="${build-test-coverage}/cobertura.ser" if:true="${test.coverage}"/>
 			<sysproperty key="extensiveTesting" value="${extensiveTesting}" />
+			<jvmarg if:true="${java.atleast9}" line="--add-opens java.base/java.lang=ALL-UNNAMED"/>
 			<jvmarg value="-Djava.awt.headless=true"/>
 			<!-- Pass the name of the JAR to the tests so they can load it into a fred instance -->
 			<jvmarg value="-DWOT_test_jar=${build-test-jar}"/>
@@ -365,6 +371,7 @@
 			</batchtest>
 			
 			<sysproperty key="extensiveTesting" value="${extensiveTesting}" />
+			<jvmarg if:true="${java.atleast9}" line="--add-opens java.base/java.lang=ALL-UNNAMED"/>
 			<jvmarg value="-Djava.awt.headless=true"/>
 			<!-- Pass the name of the JAR to the tests so they can load it into a fred instance -->
 			<jvmarg value="-DWOT_test_jar=${build-test-jar}"/>
@@ -375,9 +382,13 @@
 	<target name="dist" depends="clean,compile,junit"
 		description="generate the distribution" >
 		
-		<jar jarfile="${dist}/WebOfTrust.jar" duplicate="fail">
+		<!-- For determinism, use a fixed date.
+		     WARNING: It must be 1980, not 1970, JAR files do not support 1970! -->
+		<jar jarfile="${dist}/WebOfTrust.jar" duplicate="fail" modificationtime="1980-01-01T00:00:00Z">
 			<manifest>
 				<attribute name="Plugin-Main-Class" value="plugins.WebOfTrust.WebOfTrust"/>
+				<attribute name="Ant-Version" value="Removed for determinism"/>
+				<attribute name="Created-By"  value="Removed for determinism"/>
 			</manifest>
 			<fileset dir="src/" casesensitive="no">
 				<include name="*.txt"/> <!-- Include the GPL -->

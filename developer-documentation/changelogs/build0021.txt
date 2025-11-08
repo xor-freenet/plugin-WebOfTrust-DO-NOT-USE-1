@@ -1,0 +1,131 @@
+Web of Trust Version 0.4.5 build0021
+------------------------------------------------------------------------
+
+SUMMARY AND OUTLOOK (detailed changelog is below):
+
+This is a maintenance release which adds new seed identities and removes
+inactive ones.
+This should speed up bootstrapping for new users.
+
+
+There hasn't been a release in a long time because I was and am still
+busy with developing the big IdentityFetcher-rewrite release,
+it's currently 85 branches long.
+
+ArneBab has rightfully told me that not doing releases until the rewrite
+is finished would be taking too long and I should do releases meanwhile.
+
+Hence from now on I'll try to do small, self-contained feature releases
+more frequently.
+I'll not promise a fixed release schedule because I have been bad at
+date estimates in the past so I should rather do none.
+
+
+The next thing which I will consider for a release is updating the
+translations from Transifex.
+
+TESTING
+
+Make sure to backup the WebOfTrust directory (located in the directory
+Freenet is installed to) before you use this!
+
+Easy high level testing:
+- Check the Community / Statistics page for unusual stuff. E.g.:
+  - Data loss, e.g. decreasing count of own identities, non-own
+    identities or trust values as compared to your database before
+    installation of the testing version.
+  - High count of "Failed files" at the Identity file queue / Identity
+    file processor section.
+  - No significant progress in average downloaded / queued / processed
+    identity XML files  even after a day of uptime.
+
+Tedious low level testing:
+- Check "freenet-latest.log" for ERRORs of plugins.WebOfTrust.*
+  You can filter for this by configuring logging as:
+  - Set "Minimum priority to log messages at" to "NONE".
+  - Set "Detailed priority thresholds" to "plugins.WebOfTrust:ERROR".
+    Now any logging except WoT errors is disabled.
+  Besides you should probably increase "Log rotation interval" to
+  "48HOUR" (yes, no S in HOUR), the default is very low, 1 hour IIRC.
+  Before you report anything from the log file make VERY sure to review
+  it for private data! It might even contain the secret insert URIs of
+  your identities!
+
+DOWNLOAD
+
+Until it has been shipped with a Freenet release this build is available
+using "WebOfTrust Testing Versions" at "Configuration / Plugins" of a
+standard Freenet node.
+You must unload the regular WoT first!
+
+CHANGELOG:
+
+- [Usability] Seed identities: Add new ones, remove inactive ones
+
+  This should speed up bootstrapping for new users.
+
+  Added:
+  - Adilson_Lanpo (suggested by ArneBab)
+  - ArneBab
+  - HieronymusCH (suggested by ArneBab)
+
+  If you're one of the above, please do not turn off trust list
+  publishing in WoT's settings, otherwise your seed identity
+  wouldn't be of any use.
+
+  And your identity will now publish 100 captchas per day instead of 10.
+  Don't worry - this likely will not mean much more traffic:
+  WoT does not prefer seed identities when displaying captchas,
+  the seed identities are just downloaded first and then other identities
+  will be downloaded from their trust lists.
+  So if new users keep running WoT for some time before they solve
+  captchas then they will get captchas from other identities as well, not
+  just the seeds.
+
+  But if you wish to be removed as a seed feel free to let me know!
+  
+  Removed because they haven't been active in a long time:
+  - operhiem1
+  - toad_
+  - zidel
+
+  Thanks to ArneBab for providing the initial patch!
+
+
+CHANGELOG about stuff only interesting for developers:
+
+- [Security] Make build script deterministic so builds are reproducible
+
+  The hash of the JAR now is the same in between two builds on my
+  machine.
+  To get the same hash on two different machines you will likely need
+  to use the same JDK on both.
+
+  Notice: WoT has two build scripts, Ant and Gradle, this applies to
+  Ant. Gradle is only available on branch next currently.
+
+- [Code quality] Temporarily add GitHub Actions script from branch next,
+  runs the unit tests
+
+  Should be reverted for two reasons before merging branch next:
+
+  Branch master, which this release is based upon, still was on
+  Travis CI which has ended free service for open source projects.
+  Thus branch next contains a comprehensive set of branches to add
+  a GitHub Actions script to replace Travis and provide new
+  features.
+  Merging these branches would have been too much work for now,
+  so I instead committed the latest version of the script from
+  branch next *without* preserving the Git history.
+  I also removed some features which do not work on branch master
+  yet.
+  Therefore this should be reverted before merging branch next,
+  i.e. revert the merge commit which merged branch
+  "TEMPORARY-github-actions-script".
+
+- [Maintenance] Fix Ant build script to work with new Java and Ant
+  versions
+
+
+Thanks to:
+  - ArneBab for motivating me to do this release!
