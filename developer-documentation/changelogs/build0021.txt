@@ -61,10 +61,19 @@ CHANGELOG:
 
 CHANGELOG about stuff only interesting for developers:
 
+- [Security] Make build script deterministic so builds are reproducible
+
+  The hash of the JAR now is the same in between two builds on my
+  machine.
+  To get the same hash on two different machines you will likely need
+  to use the same JDK on both.
+
+  Notice: WoT has two build scripts, Ant and Gradle, this applies to
+  Ant. Gradle is only available on branch next currently.
+
 - [Maintenance] Fix Ant build script to work with new Java and Ant
   versions
 
 
 Thanks to:
   - ArneBab for motivating me to do this release!
-

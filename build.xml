@@ -382,9 +382,13 @@
 	<target name="dist" depends="clean,compile,junit"
 		description="generate the distribution" >
 		
-		<jar jarfile="${dist}/WebOfTrust.jar" duplicate="fail">
+		<!-- For determinism, use a fixed date.
+		     WARNING: It must be 1980, not 1970, JAR files do not support 1970! -->
+		<jar jarfile="${dist}/WebOfTrust.jar" duplicate="fail" modificationtime="1980-01-01T00:00:00Z">
 			<manifest>
 				<attribute name="Plugin-Main-Class" value="plugins.WebOfTrust.WebOfTrust"/>
+				<attribute name="Ant-Version" value="Removed for determinism"/>
+				<attribute name="Created-By"  value="Removed for determinism"/>
 			</manifest>
 			<fileset dir="src/" casesensitive="no">
 				<include name="*.txt"/> <!-- Include the GPL -->
