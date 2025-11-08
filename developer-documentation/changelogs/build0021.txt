@@ -71,6 +71,25 @@ CHANGELOG about stuff only interesting for developers:
   Notice: WoT has two build scripts, Ant and Gradle, this applies to
   Ant. Gradle is only available on branch next currently.
 
+- [Code quality] Temporarily add GitHub Actions script from branch next,
+  runs the unit tests
+
+  Should be reverted for two reasons before merging branch next:
+
+  Branch master, which this release is based upon, still was on
+  Travis CI which has ended free service for open source projects.
+  Thus branch next contains a comprehensive set of branches to add
+  a GitHub Actions script to replace Travis and provide new
+  features.
+  Merging these branches would have been too much work for now,
+  so I instead committed the latest version of the script from
+  branch next *without* preserving the Git history.
+  I also removed some features which do not work on branch master
+  yet.
+  Therefore this should be reverted before merging branch next,
+  i.e. revert the merge commit which merged branch
+  "TEMPORARY-github-actions-script".
+
 - [Maintenance] Fix Ant build script to work with new Java and Ant
   versions
 
