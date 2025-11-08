@@ -1,3 +1,7 @@
+# FIXME: 2025-11-08 This is a TEMPORARY GitHub Actions script, it should be reverted before merging
+# branch next! See the explanation added to the changelog of build0021 by the previous git commit
+# f87c0bfe790fc711a22fc7a347539d5203da4063.
+
 # FIXME: Replace the Travis CI badges in the README.md with GitHub Actions badges.
 
 name: CI
